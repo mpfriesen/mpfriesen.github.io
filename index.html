@@ -4,9 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-
-    <!-- Bootstrap CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.typekit.net/ltb2sic.css">
     <link rel="stylesheet" href="css/main.css">
@@ -22,43 +21,36 @@
             </div>
         </div>
         
-        <div class="portfolio">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="port-img">
-                        <a href="https://projects.oregonlive.com/taxes/property/map/"><img src="images/tax_thumb.png" alt="tax_thumb" width="1400" height="740" ></a>
-                    </div>
-                    <h5>Property tax winners and losers</h5>
-                </div>
-                <div class="col-sm-4">
-                    <div class="port-img">
-                        <a href="https://projects.oregonlive.com/maps/vaccination/"><img src="images/vaccine_thumb.png" alt="vaccine_thumb" width="1400" height="740" ></a>
-                    </div>
-                    <h5>Oregon vaccination rates</h5>
-                </div>
-                <div class="col-sm-4">
-                    <div class="port-img">
-                        <a href="https://projects.oregonlive.com/maps/bikes/thefts"><img src="images/bike_thumb.png" alt="bike_thumb" width="1400" height="740" ></a>
-                    </div>
-                    <h5>Portland bike thefts</h5>
-                </div>
-            </div>
-        </div>
+        <div class="portfolio"></div>
+        <div class="social"><a href="https://twitter.com/mfriesen">TWITTER</a> <span class="gray">|</span> <a href="https://github.com/mpfriesen/">GITHUB</a> <span class="gray">|</span> <a href="https://www.linkedin.com/in/mfriesen/">LINKEDIN</a></div>
     </div>
     <script>
         $.getJSON("portfolio.json", function(result){
+            var block = "";
+            var rows = "";
             $.each(result, function(i, field){
-              $("div").append(field + " ");
+                console.log(field);
+                if (i%3==0) {
+                    block += "<div class='row'>";
+                }
+                block += "<div class='col-sm-4'>"
+                    + "<div class='port-img'>"
+                        +   "<a href='"+field.link+"'><img src='images/"+field.img_thumb+".png' ></a>"
+                    + "</div>"
+                    + "<h5>"+field.headline+"</h5>"
+                + "</div>";
+                if ((i+1)%3==0) {
+                    block += "</div>";
+                }
             });
+            $(".portfolio").html(block)
+           
         });        
         
-        var img = "<div class='port-img'>"
-                +   "<img src='images/vaccine_thumb.png' alt='tax_thumb' >"
-                + "</div>";
         
         
         
-        $(".portfolio").html()
+        
         
         
         
