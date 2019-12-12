@@ -1,0 +1,33 @@
+body {
+  font-family: proxima-nova,sans-serif; }
+
+h1 {
+  font-weight: 900;
+  text-align: center;
+  font-size: 30px;
+  color: #ddd; }
+
+h1 span {
+  background-color: #444;
+  padding: 10px 10px 3px;
+  vertical-align: middle; }
+
+.port-img {
+  margin-top: 40px; }
+
+.port-img img {
+  width: 100%;
+  height: auto;
+  border: 2px solid white;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px #aaa; }
+
+.port-img img:hover {
+  box-shadow: 1px 1px 5px #666; }
+
+h5 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px; }
+
+/*# sourceMappingURL=main.css.map */
