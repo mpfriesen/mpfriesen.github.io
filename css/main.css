@@ -4,13 +4,12 @@ body {
 h1 {
   font-weight: 900;
   text-align: center;
-  font-size: 30px;
+  font-size: 35px;
   color: #ddd; }
 
 h1 span {
   background-color: #444;
-  padding: 10px 10px 3px;
-  vertical-align: middle; }
+  padding: 0 10px 0; }
 
 .port-img {
   margin-top: 40px; }
@@ -29,5 +28,19 @@ h5 {
   font-weight: bold;
   font-size: 18px;
   margin-top: 10px; }
+
+.lede {
+  width: 100%;
+  height: calc(100vw * .379);
+  background: url(../images/willamette.jpg) no-repeat;
+  background-size: contain; }
+
+.desc {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 100; }
+
+.gray {
+  color: #ddd; }
 
 /*# sourceMappingURL=main.css.map */
