@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://use.typekit.net/ltb2sic.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <title>Mark Friesen</title>
+  </head>
+  <body>
+    <div class="container port_detail">
+        <div class="row">
+            <div class="col-12">
+                <h1><span>MARK FRIESEN</span></h1>
+                <div class="desc">Cartography <span class="gray">|</span> Data visualization</div>
+            </div>
+        </div>
+        
+        <div class="portfolio"></div>
+        <div class="navigate row">
+            <div class="col-sm-6">
+                <div class="goback">&laquo; Back to main page</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="arrows"><i class="fa fa-caret-left"></i> <i class="fa fa-caret-right"></i></div>
+            </div>
+        </div>
+        <div class="social"><a href="images/friesen_resume.pdf">RESUME</a> <span class="gray">|</span> <a href="https://twitter.com/mfriesen">TWITTER</a> <span class="gray">|</span> <a href="https://github.com/mpfriesen/">GITHUB</a> <span class="gray">|</span> <a href="https://www.linkedin.com/in/mfriesen/">LINKEDIN</a></div>
+    </div>
+    <script>
+        $.getJSON("../portfolio.json", function(result){
+            
+            makePage = function(id) {
+                $.each(result, function(i, field){
+                    $(".portfolio").html("");
+                    if (field.id==1) {
+                        var block = "<div class='row'>"
+                            + "<div class='col-md-12'>"
+                            +   "<div class='img_main'>"
+                            +       "<img src='../images/"+field.img_large+".png' >"
+                            +   "</div>"
+                            +   "<div class='text_main'>"
+                            +       "<h2>"+field.headline+"</h2>"
+                            +       "<p>"+field.desc+"</p>"
+                            +   "</div>"
+                            + "</div>";
+                        $(".portfolio").html(block).fadeIn();
+                        return false;
+    
+                    }
+            
+                });
+                 
+            }
+            if (window.location.hash) {
+                hash = window.location.hash.substr(1);
+            } else {
+                hash = 1;
+            }
+
+            makePage(hash);
+
+            $(".fa-caret-right").click(function(e) {
+                newpage = parseInt(hash)+1;
+                console.log("default " + event.type + " prevented");
+                makePage(newpage);
+                e.preventDefault();
+           })
+         
+        });        
+        
+        
+        
+        
+        
+        
+        
+        
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+    
+    
+    
+  </body>
+</html>

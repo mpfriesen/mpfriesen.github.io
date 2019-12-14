@@ -33,7 +33,7 @@ h5 {
   width: 100%;
   height: calc(100vw * .379);
   background: url(../images/willamette.jpg) no-repeat;
-  background-size: contain; }
+  background-size: cover; }
 
 .desc, .social {
   text-align: center;
@@ -48,5 +48,23 @@ h5 {
 
 .gray {
   color: #ddd; }
+
+.img_main {
+  margin: 50px 0 20px; }
+
+.img_main img {
+  width: 100%;
+  height: auto; }
+
+.navigate {
+  margin-top: 30px; }
+
+.port_detail h2 {
+  font-weight: 700;
+  margin-bottom: 3px; }
+
+.arrows {
+  text-align: right;
+  font-size: 25px; }
 
 /*# sourceMappingURL=main.css.map */
