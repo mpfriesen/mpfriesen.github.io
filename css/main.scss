@@ -2,14 +2,26 @@ $light-gray: #ddd;
 $dark-gray: #444;
 
 body { font-family: proxima-nova,sans-serif; }
-h1 { font-weight: 900; text-align: center; font-size: 35px; color: $light-gray;  }
+h1 { font-weight: 900; text-align: center; font-size: 35px; color: $light-gray; margin-bottom: 0;  }
 h1 span { background-color: $dark-gray; padding: 0 10px 0; }
+h2 { font-weight: 700; }
+.detail-item h2 { margin-top: 10px; }
 .port-img { margin-top: 40px; }
 .port-img img { width: 100%; height: auto; border: 2px solid white;  border-radius: 8px; box-shadow: 1px 1px 5px #aaa;  }
 .port-img img:hover { box-shadow: 1px 1px 5px #666; }
 h5 { font-weight: bold; font-size: 18px; margin-top: 10px; }
-.lede { width: 100%; height: calc(100vw * .379); background: url(../images/willamette.jpg) no-repeat; background-size: contain; }
+.lede { width: 100%; height: calc(100vw * .2); background: url(../images/willamette.jpg) no-repeat; background-size: cover; position: fixed; background-position-y: 50%; }
 .desc,.social { text-align: center; text-transform: uppercase; font-weight: 100; }
 .social { margin-top: 50px; }
 .social a { color: $dark-gray; }
 .gray { color: $light-gray; }
+.container { padding-top: calc(100vw * .2); position: relative; }
+.port-item { background-color: rgba(255,255,255,.8); }
+.detail-item { padding: 20px; }
+.desc .port-item {  padding-top:5px; }
+.popup { position: absolute; width: 100%; top:0; left: 0; background-color: #e1e1e1; padding: 5%; display: none; }
+.detail-img img { width: 100%; }
+@media only screen and (max-width: 575px) {
+    .portfolio { width: 80%; margin:auto; }
+    .port-item { padding: 0 30px; }
+}

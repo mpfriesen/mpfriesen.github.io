@@ -17,25 +17,31 @@
         <div class="row">
             <div class="col-12">
                 <h1><span>MARK FRIESEN</span></h1>
-                <div class="desc">Cartography <span class="gray">|</span> Data visualization</div>
             </div>
         </div>
-        
-        <div class="portfolio"></div>
+        <div class="port-contain">
+            <div class="desc">
+                <div class="row">
+                    <div class="port-item col-12">Journalism <span class="gray">|</span> Data visualization</div>
+                </div>
+            </div>
+            <div class="portfolio"></div>
+        </div>
         <div class="social"><a href="images/friesen_resume.pdf">RESUME</a> <span class="gray">|</span> <a href="https://twitter.com/mfriesen">TWITTER</a> <span class="gray">|</span> <a href="https://github.com/mpfriesen/">GITHUB</a> <span class="gray">|</span> <a href="https://www.linkedin.com/in/mfriesen/">LINKEDIN</a></div>
     </div>
+    <div class="popup"></div>
     <script>
         $.getJSON("portfolio.json", function(result){
             var block = "";
             var rows = "";
             $.each(result, function(i, field){
-                console.log(field);
                 if (i%3==0) {
                     block += "<div class='row'>";
                 }
-                block += "<div class='col-sm-4'>"
+                block += "<div data-id='"+field.id+"' class='port-item col-sm-4'>"
                     + "<div class='port-img'>"
-                        +   "<a href='"+field.link+"'><img src='images/"+field.img_thumb+".png' ></a>"
+                    + "<img src='images/"+field.img_thumb+".png' >"
+//                         +   "<a href='"+field.link+"'><img src='images/"+field.img_thumb+".png' ></a>"
                     + "</div>"
                     + "<h5>"+field.headline+"</h5>"
                 + "</div>";
@@ -43,7 +49,40 @@
                     block += "</div>";
                 }
             });
-            $(".portfolio").html(block)
+            $(".portfolio").html(block);
+
+            $(".port-item").click(function() {
+                $(".container").css({"opacity":".3"});
+                var id = $(this).data("id")-1;
+                var item = result[id];
+                var popblock = "<div class='row'>"
+                    + "<div class='detail-item col-12'>"
+                    +   "<div class='detail-img'>"
+                    +       "<img src='images/"+item.img_thumb+".png' >"
+                    +   "</div>"
+                    +   "<h2>"+item.headline+"</h2>"
+                    +   "<div class='detail-desc'>"+item.desc+"</div>"
+                    +   "</div>"
+                    + "</div>"
+                
+                
+                
+                
+                
+                ;
+                window.scrollTo(0, 0);
+                $(".popup").html(popblock).show();
+                
+                
+            })
+            $(".popup").click(function() {
+                $(".container").css({"opacity":"inherit"});
+                $(".popup").hide().html("");
+            })
+
+
+
+
            
         });        
         
