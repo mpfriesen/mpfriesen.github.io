@@ -28,6 +28,7 @@
         .census_1940 { display: block; }
         .controls { margin-left: 20px; }
         .infobox { margin-top: 15px;}
+        .button_block .right-col { text-align: right; }
         button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #900; border-color:#900; }
         button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: steelblue; border-color: steelblue; }
     </style>
@@ -45,7 +46,7 @@
             </div>
         </div>
         <div class="row button_block">
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="btn-group btn-group-sm census_years" role="group" aria-label="Census years">
                   <button type="button" class="btn button_0 btn-secondary active" data-position="0">1940</button>
                   <button type="button" class="btn button_1 btn-secondary" data-position="1">1950</button>
@@ -59,10 +60,10 @@
                   <button type="button" class="btn btn-secondary"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 right-col">
                 <div class="btn-group btn-group-sm census_type" role="group" aria-label="Map type">
-                  <button type="button" class="btn button_pct btn-secondary active" data-type="pct">Percentage</button>
-                  <button type="button" class="btn button_raw btn-secondary" data-type="raw">Raw population number</button>
+                  <button type="button" class="btn button_pct btn-secondary active" data-type="pct">Percentages</button>
+                  <button type="button" class="btn button_raw btn-secondary" data-type="raw">Numbers</button>
                 </div>                
             </div>
         </div>
@@ -83,6 +84,10 @@
         
     </div>
     <script>
+		function addCommas(x) {
+		    return x.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
+		}	  		
+
  		var yearSlide = [1940,1950,1960,1970,1980,1990,2000,2010,2018];
        
         var pdxrace =  {
@@ -106,11 +111,11 @@
             white = pdxrace[popyear].white;
             black = pdxrace[popyear].black;
             total = pdxrace[popyear].total;
-            blackpct = black/total;
+            blackpct = (black/total)*100;
             html += "<div class='year_block'>"
                 + "<div class='info_year'>"+popyear+"</div>"
-                + "<div>Total: "+total+"</div>"
-                + "<div>African-American: "+black+" ("+blackpct.toFixed(1)+"%)</div>"
+                + "<div>Total: "+addCommas(total)+"</div>"
+                + "<div>African-American: "+addCommas(black)+" ("+blackpct.toFixed(1)+"%)</div>"
                 + "</div>";
         }
         
