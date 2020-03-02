@@ -21,16 +21,19 @@
         h4 { font-weight: 700;}
         .container { padding: 0; }
         .guff { margin-bottom: 20px; }
-        #map { width: 100%; height: 70%; margin-top: 20px; }
+        #map { width: 100%; height: 100%; }
+        .infocol { height: 100%; overflow: auto; }
         p { margin: 0; }
         .hedblock { margin-top: 20px; }
-        .tracts,#slider,.fa-pause { display: none; }
-        .census_1940 { display: block; }
+        .tracts,#slider,.fa-pause,.year_block { display: none; }
         .controls { margin-left: 20px; }
         .infobox { margin-top: 15px;}
+        .button_block { margin-bottom: 20px; }
         .button_block .right-col { text-align: right; }
+        .year_block { line-height: 110%; margin-top: 8px; }
         button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #900; border-color:#900; }
         button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: steelblue; border-color: steelblue; }
+        .credit { font-size: 10px; text-transform: uppercase; margin-top: 4px; }
     </style>
   </head>
   <body>
@@ -40,7 +43,7 @@
                 <div class="hedblock">
                     <h1>African-American population in Portland, 1940-2018</h1>
                     <div class="guff">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec velit risus. Vivamus vitae libero quis est iaculis tempus. Nam nulla justo, egestas ut sollicitudin vel, volutpat vel dui. Integer lacinia commodo congue. Ut non ante eu nisi imperdiet tincidunt. Pellentesque sollicitudin a quam id consectetur. Ut faucibus diam nec quam ultricies, laoreet scelerisque dolor feugiat. </p>
+                        <p></p>
                     </div>
                 </div>
             </div>
@@ -66,13 +69,16 @@
                   <button type="button" class="btn button_raw btn-secondary" data-type="raw">Numbers</button>
                 </div>                
             </div>
+            <div class="col-md-3"></div>
         </div>
-        <div class="row">
+        <div class="row map_block">
             <div class="col-9">
                 <div id="map"></div>
+                <div class="credit">Sources: IPUMS NHGIS, University of Minnesota; Social Explorer; U.S. Census Bureau; City of Portland</div>
 				<div id="slider"></div>	
             </div>
-            <div class="col-3">
+            <div class="col-3 infocol">
+                <h4>Portland population</h4>
                 <div class="infobox">
                 </div>
             </div>
@@ -112,17 +118,18 @@
             black = pdxrace[popyear].black;
             total = pdxrace[popyear].total;
             blackpct = (black/total)*100;
-            html += "<div class='year_block'>"
-                + "<div class='info_year'>"+popyear+"</div>"
-                + "<div>Total: "+addCommas(total)+"</div>"
+            
+            html = "<div class='year_block census_"+popyear+"'>"
+                + "<div class='info_year'><strong>"+popyear+":</strong> "+addCommas(total)+"</div>"
                 + "<div>African-American: "+addCommas(black)+" ("+blackpct.toFixed(1)+"%)</div>"
                 + "</div>";
+                
+            $(".infobox").prepend(html);
         }
         
         
         
         
-        $(".infobox").html("<h4>Portland population</h4>"+html);
         
         
         
@@ -131,8 +138,9 @@
 		var winheight = $(window).height();
         var hedheight = $(".top_block").height();
         var buttonheight = $(".button_block").height();
-        var mapheight = winheight-hedheight-buttonheight-40;		
-		$("#map").height(mapheight);
+        var creditheight = $(".credit").height();
+        var mapheight = winheight-hedheight-buttonheight-creditheight-25;		
+		$(".map_block").height(mapheight);
 
 
 	  	var slidemin = 0,
@@ -337,6 +345,8 @@
         			$(".fa-play").toggle();
         			$(".fa-pause").toggle();
         		});
+        		
+        		changeYear(0);
 	
             });
 			
