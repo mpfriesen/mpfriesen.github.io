@@ -18,7 +18,7 @@
     <title>Mark Friesen</title>
     <style type="text/css">
         body { background-color: #ddd; }
-        h4 { font-weight: 700;}
+        h2 { font-weight: 700;}
         .container { padding: 0; }
         .guff { margin-bottom: 20px; }
         #map { width: 100%; height: 100%; }
@@ -27,13 +27,17 @@
         .hedblock { margin-top: 20px; }
         .tracts,#slider,.fa-pause,.year_block { display: none; }
         .controls { margin-left: 20px; }
-        .infobox { margin-top: 15px;}
         .button_block { margin-bottom: 20px; }
         .button_block .right-col { text-align: right; }
-        .year_block { line-height: 110%; margin-top: 8px; }
-        button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #900; border-color:#900; }
-        button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: steelblue; border-color: steelblue; }
+        .year_block,.tractbox { line-height: 110%; }
+        .year_block h2,.tractbox h5 { color: #762a83; }
+        h5 { margin: 20px 0 4px; }
+        button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #762a83; border-color:#762a83; }
+        button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: #1b7837; border-color: #1b7837; }
         .credit { font-size: 10px; text-transform: uppercase; margin-top: 4px; }
+        .info_hed { font-weight: 700; text-transform: uppercase; font-size: 16px; color: #777; margin-bottom:4px; }
+        .info_num { font-weight: 700; font-size: 25px; margin-bottom: 8px; }
+        .pct { font-size: 85%; }
     </style>
   </head>
   <body>
@@ -49,7 +53,7 @@
             </div>
         </div>
         <div class="row button_block">
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <div class="btn-group btn-group-sm census_years" role="group" aria-label="Census years">
                   <button type="button" class="btn button_0 btn-secondary active" data-position="0">1940</button>
                   <button type="button" class="btn button_1 btn-secondary" data-position="1">1950</button>
@@ -63,13 +67,13 @@
                   <button type="button" class="btn btn-secondary"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
                 </div>
             </div>
-            <div class="col-md-3 right-col">
+            <div class="col-lg-3  col-sm-6 right-col">
                 <div class="btn-group btn-group-sm census_type" role="group" aria-label="Map type">
                   <button type="button" class="btn button_pct btn-secondary active" data-type="pct">Percentages</button>
                   <button type="button" class="btn button_raw btn-secondary" data-type="raw">Numbers</button>
                 </div>                
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-lg-3"></div>
         </div>
         <div class="row map_block">
             <div class="col-9">
@@ -78,9 +82,9 @@
 				<div id="slider"></div>	
             </div>
             <div class="col-3 infocol">
-                <h4>Portland population</h4>
-                <div class="infobox">
-                </div>
+                <div class="infoyear"></div>
+                <div class="infobox"></div>
+                <div class="tractbox"></div>
             </div>
         </div>			
 
@@ -107,33 +111,6 @@
           "2010": { "white":449861, "black":36842, "total":590649},
           "2018": { "white":498862, "black":37596, "total":647250}
         }
-        
-        var html = "",
-            white = 0,
-            black = 0,
-            total = 0;
-        for (y in yearSlide) {
-            popyear = yearSlide[y];
-            white = pdxrace[popyear].white;
-            black = pdxrace[popyear].black;
-            total = pdxrace[popyear].total;
-            blackpct = (black/total)*100;
-            
-            html = "<div class='year_block census_"+popyear+"'>"
-                + "<div class='info_year'><strong>"+popyear+":</strong> "+addCommas(total)+"</div>"
-                + "<div>African-American: "+addCommas(black)+" ("+blackpct.toFixed(1)+"%)</div>"
-                + "</div>";
-                
-            $(".infobox").prepend(html);
-        }
-        
-        
-        
-        
-        
-        
-        
-        
 
 		var winheight = $(window).height();
         var hedheight = $(".top_block").height();
@@ -173,18 +150,13 @@
         $.getJSON('combined.geojson', function(data) {
 			$.getJSON('pdx_limits.json', function(limitdata){
 
-/*
-            population = {}
-            $.each(data.features,function(key,obj) {
-                population[obj.properties.year] = { 'white': obj.properties.white, 'total': obj.properties.total, 'black': obj.properties.black };
-            })
-*/
-
     			var weight = 0;
     			var fillop = .7;
     
     			map = L.map('map',{scrollWheelZoom:false});
-    		
+ 				map.createPane('boundaries');
+				map.getPane('boundaries').style.pointerEvents = 'none';
+   		
     
     			var sw = L.latLng(45.428653, -122.924641);
     			var ne = L.latLng(45.607003, -122.380946);
@@ -208,13 +180,23 @@
         			});
     			}
     			
-    			limits[0].addTo(map);
 
 
     			function pop(feature,layer) {
-        			var minpct = ((feature.properties.total - feature.properties.white)/feature.properties.total)*100;
-        			var mintxt = "<p>Non-white pct: "+minpct.toFixed(1)+"%</p>";
-        			layer.bindPopup(mintxt);
+        			layer.on("click",function(e) {
+            			var p = e.target.feature.properties;
+            			var tract = p.tract_name;
+            			var blackpct = (p.black/p.total)*100;
+            			var whitepct = (p.white/p.total)*100;
+            			var tract = "<h5>"+p.county+" County<br>"+p.tract_name+"</h5>"
+            			    + "<div class='info_hed'>Total</div>"
+            			    + "<div class='info_num'>"+addCommas(p.total)+"</div>"
+            			    + "<div class='info_hed'>African-American</div>"
+            			    + "<div class='info_num'>"+addCommas(p.black)+" <span class='pct'>("+blackpct.toFixed(1)+"%)</span></div>"
+            			    + "<div class='info_hed'>White</div>"
+            			    + "<div class='info_num'>"+addCommas(p.white)+" <span class='pct'>("+whitepct.toFixed(1)+"%)</span></div>";
+                        $(".tractbox").html("").html(tract);
+                    })
     			}
     			
     			
@@ -222,7 +204,7 @@
     			var pctBlack = L.geoJson(data, {
     				onEachFeature: pop,
     				pointToLayer: function(feature,latlng) {
-        				var color = "#900";
+        				var color = "#762a83";
         				var white = feature.properties.white;
         				var total = feature.properties.total;
         				var year = feature.properties.year;
@@ -244,12 +226,12 @@
         				return newmarker;
         				
     				}
-    			}).addTo(map);
+    			}).addTo(map).bringToFront();
     
     			var rawBlack = L.geoJson(data, {
     				onEachFeature: pop,
     				pointToLayer: function(feature,latlng) {
-        				var color = "steelblue";
+        				var color = "#1b7837";
         				var white = feature.properties.white;
         				var total = feature.properties.total;
         				var year = feature.properties.year;
@@ -279,9 +261,9 @@
         			map.removeLayer(pctBlack);
                     var position = $(".btn-group.census_years button.active").data("position");
         			if (type=="pct") {
-            			pctBlack.addTo(map);
+            			pctBlack.addTo(map).bringToFront();
         			} else {
-            			rawBlack.addTo(map);
+            			rawBlack.addTo(map).bringToFront();
         			}
                     changeYear(position);
     			}
@@ -297,21 +279,41 @@
                     changeYear(position);
                 })
                 
+                function makePop(year) {
+                    white = pdxrace[year].white;
+                    black = pdxrace[year].black;
+                    total = pdxrace[year].total;
+                    blackpct = (black/total)*100;
+                    
+                    html = "<div class='year_block census_"+year+"'>"
+                        + "<h2>"+year+"</h2>"
+                        + "<div class='info_hed'>Total population</div>"
+                        + "<div class='info_num'>"+addCommas(total)+"</div>"
+                        + "<div class='info_hed'>African-American</div>"
+                        + "<div class='info_num'>"+addCommas(black)+" <span class='pct'>("+blackpct.toFixed(1)+"%)</span></div>"
+                        + "</div>";
+                        
+                    $(".infobox").html("").html(html);
+                }
+                
                 function changeYear(position) {
+                    var year = yearSlide[position];
+                    makePop(year);
                     $(".btn-group.census_years button").removeClass("active");
                     $(".button_"+position).addClass("active");
-                    var year = yearSlide[position];
                     $(".tracts").hide();
                     $(".census_"+year).show();
+                    $(".tractbox").html("");
                     for (x=0;x<9;x++) {
                         map.removeLayer(limits[x]);
                     }
-                    limits[position].addTo(map);
+                    limits[position].addTo(map).bringToBack();
                 }
          		
         		var id;
         	  
         		function playMap(sliderval) {
+                    console.log(sliderval);
         			var loop=sliderval;
         			id = window.setInterval(function(){
         				loop++;
@@ -338,7 +340,6 @@
         				val = s.slider("value");
         			if (val==slidemax) {
         				val = -1;
-        				$(".buildshape").hide();
         			}
         			e.preventDefault();
         			playMap(val);
