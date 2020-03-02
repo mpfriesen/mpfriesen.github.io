@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
+   <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/ltb2sic.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <title>Mark Friesen</title>
+    <style type="text/css">
+        body { background-color: #ddd; }
+        h4 { font-weight: 700;}
+        .container { padding: 0; }
+        .guff { margin-bottom: 20px; }
+        #map { width: 100%; height: 70%; margin-top: 20px; }
+        p { margin: 0; }
+        .hedblock { margin-top: 20px; }
+        .tracts,#slider,.fa-pause { display: none; }
+        .census_1940 { display: block; }
+        .controls { margin-left: 20px; }
+        .infobox { margin-top: 15px;}
+        button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #900; border-color:#900; }
+        button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: steelblue; border-color: steelblue; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row top_block">
+            <div class="col-12">
+                <div class="hedblock">
+                    <h1>African-American population in Portland, 1940-2018</h1>
+                    <div class="guff">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec velit risus. Vivamus vitae libero quis est iaculis tempus. Nam nulla justo, egestas ut sollicitudin vel, volutpat vel dui. Integer lacinia commodo congue. Ut non ante eu nisi imperdiet tincidunt. Pellentesque sollicitudin a quam id consectetur. Ut faucibus diam nec quam ultricies, laoreet scelerisque dolor feugiat. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row button_block">
+            <div class="col-6">
+                <div class="btn-group btn-group-sm census_years" role="group" aria-label="Census years">
+                  <button type="button" class="btn button_0 btn-secondary active" data-position="0">1940</button>
+                  <button type="button" class="btn button_1 btn-secondary" data-position="1">1950</button>
+                  <button type="button" class="btn button_2 btn-secondary" data-position="2">1960</button>
+                  <button type="button" class="btn button_3 btn-secondary" data-position="3">1970</button>
+                  <button type="button" class="btn button_4 btn-secondary" data-position="4">1980</button>
+                  <button type="button" class="btn button_5 btn-secondary" data-position="5">1990</button>
+                  <button type="button" class="btn button_6 btn-secondary" data-position="6">2000</button>
+                  <button type="button" class="btn button_7 btn-secondary" data-position="7">2010</button>
+                  <button type="button" class="btn button_8 btn-secondary" data-position="8">2018</button>
+                  <button type="button" class="btn btn-secondary"><i class="fa fa-play"></i><i class="fa fa-pause"></i></button>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="btn-group btn-group-sm census_type" role="group" aria-label="Map type">
+                  <button type="button" class="btn button_pct btn-secondary active" data-type="pct">Percentage</button>
+                  <button type="button" class="btn button_raw btn-secondary" data-type="raw">Raw population number</button>
+                </div>                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-9">
+                <div id="map"></div>
+				<div id="slider"></div>	
+            </div>
+            <div class="col-3">
+                <div class="infobox">
+                </div>
+            </div>
+        </div>			
+
+
+
+
+        
+    </div>
+    <script>
+ 		var yearSlide = [1940,1950,1960,1970,1980,1990,2000,2010,2018];
+       
+        var pdxrace =  {
+          "1940": { "white":299707, "black":1931, "total":305394},
+          "1950": { "white":360388, "black":9529, "total":373628},
+          "1960": { "white":347068, "black":15615, "total":367912},
+          "1970": { "white":376097, "black":21699, "total":406452},
+          "1980": { "white":344455, "black":28288, "total":392695},
+          "1990": { "white":399706, "black":33863, "total":468939},
+          "2000": { "white":417934, "black":35185, "total":536072},
+          "2010": { "white":449861, "black":36842, "total":590649},
+          "2018": { "white":498862, "black":37596, "total":647250}
+        }
+        
+        var html = "",
+            white = 0,
+            black = 0,
+            total = 0;
+        for (y in yearSlide) {
+            popyear = yearSlide[y];
+            white = pdxrace[popyear].white;
+            black = pdxrace[popyear].black;
+            total = pdxrace[popyear].total;
+            blackpct = black/total;
+            html += "<div class='year_block'>"
+                + "<div class='info_year'>"+popyear+"</div>"
+                + "<div>Total: "+total+"</div>"
+                + "<div>African-American: "+black+" ("+blackpct.toFixed(1)+"%)</div>"
+                + "</div>";
+        }
+        
+        
+        
+        
+        $(".infobox").html("<h4>Portland population</h4>"+html);
+        
+        
+        
+        
+
+		var winheight = $(window).height();
+        var hedheight = $(".top_block").height();
+        var buttonheight = $(".button_block").height();
+        var mapheight = winheight-hedheight-buttonheight-40;		
+		$("#map").height(mapheight);
+
+
+	  	var slidemin = 0,
+	  		slidemax = yearSlide.length-1,
+	  		slidestep = 1,
+	  		slidestart = 0;
+
+		$("#slider").slider({
+		 	animate: "fast",
+		    min: slidemin, 
+		    max: slidemax, 
+		    value: slidestart,
+		    step: slidestep, 
+		    slide: function(event, ui) {
+		    	currentSlide = $("#slider").slider("value");
+		    	nextSlide = ui.value;
+		    	prevyear = yearSlide[currentSlide];
+		    	if (currentSlide<nextSlide) {
+			    	var dir = "up";
+		    	} else {
+			    	var dir = "down";
+		    	}
+		    	changeYear(nextSlide);
+			}
+		});
+
+
+
+        
+        $.getJSON('combined.geojson', function(data) {
+			$.getJSON('pdx_limits.json', function(limitdata){
+
+/*
+            population = {}
+            $.each(data.features,function(key,obj) {
+                population[obj.properties.year] = { 'white': obj.properties.white, 'total': obj.properties.total, 'black': obj.properties.black };
+            })
+*/
+
+    			var weight = 0;
+    			var fillop = .7;
+    
+    			map = L.map('map',{scrollWheelZoom:false});
+    		
+    
+    			var sw = L.latLng(45.428653, -122.924641);
+    			var ne = L.latLng(45.607003, -122.380946);
+    			var bounds = L.latLngBounds(sw,ne);
+    			map.fitBounds(bounds);
+    
+    			var cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, basemap tiles &copy; <a href="http://cartodb.com/attributions">CartoDB</a>';
+    		
+    			var positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    				attribution: cartodbAttribution
+    			}).addTo(map);
+    			
+    			var limits=[];
+    			
+    			for (x=0;x<9;x++) {
+         			limits[x] = L.geoJson(limitdata.features[x], {
+        				fillOpacity: 0,
+        				weight: 2,
+        				color:"#ccc",
+        				dashArray: '3'
+        			});
+    			}
+    			
+    			limits[0].addTo(map);
+
+
+    			function pop(feature,layer) {
+        			var minpct = ((feature.properties.total - feature.properties.white)/feature.properties.total)*100;
+        			var mintxt = "<p>Non-white pct: "+minpct.toFixed(1)+"%</p>";
+        			layer.bindPopup(mintxt);
+    			}
+    			
+    			
+          
+    			var pctBlack = L.geoJson(data, {
+    				onEachFeature: pop,
+    				pointToLayer: function(feature,latlng) {
+        				var color = "#900";
+        				var white = feature.properties.white;
+        				var total = feature.properties.total;
+        				var year = feature.properties.year;
+        				var black = feature.properties.black;
+        				var pct = black/total;
+                        var area = pct*800;
+        				var r = Math.sqrt(area/Math.PI);
+                        var yearclass = "tracts census_"+year;
+        				
+        				
+        				var newmarker = new L.circleMarker(latlng, {
+                            className: yearclass,
+        					radius: r,
+        					fillColor: color,
+        					weight: 0,
+        					fillOpacity: fillop
+        				});
+        
+        				return newmarker;
+        				
+    				}
+    			}).addTo(map);
+    
+    			var rawBlack = L.geoJson(data, {
+    				onEachFeature: pop,
+    				pointToLayer: function(feature,latlng) {
+        				var color = "steelblue";
+        				var white = feature.properties.white;
+        				var total = feature.properties.total;
+        				var year = feature.properties.year;
+        				var black = feature.properties.black;
+                        var area = black/4;
+        				var r = Math.sqrt(area/Math.PI);
+                        var yearclass = "tracts census_"+year;
+        				
+        				
+        				var newmarker = new L.circleMarker(latlng, {
+                            className: yearclass,
+        					radius: r,
+        					fillColor: color,
+        					weight: 0,
+        					fillOpacity: fillop
+        				});
+        
+        				return newmarker;
+        				
+    				}
+    			});
+    			
+    			function changeType(type) {
+                    $(".btn-group.census_type button").removeClass("active");
+                    $(".button_"+type).addClass("active");
+        			map.removeLayer(rawBlack);
+        			map.removeLayer(pctBlack);
+                    var position = $(".btn-group.census_years button.active").data("position");
+        			if (type=="pct") {
+            			pctBlack.addTo(map);
+        			} else {
+            			rawBlack.addTo(map);
+        			}
+                    changeYear(position);
+    			}
+    			
+    			
+                $(".btn-group.census_type button").on("click",function() {
+                    changeType($(this).data("type"));
+                })
+
+
+                $(".btn-group.census_years button").on("click",function() {
+                    var position = $(this).data("position");
+                    changeYear(position);
+                })
+                
+                function changeYear(position) {
+                    $(".btn-group.census_years button").removeClass("active");
+                    $(".button_"+position).addClass("active");
+                    var year = yearSlide[position];
+                    $(".tracts").hide();
+                    $(".census_"+year).show();
+                    for (x=0;x<9;x++) {
+                        map.removeLayer(limits[x]);
+                    }
+                    limits[position].addTo(map);
+                }
+         		
+        		var id;
+        	  
+        		function playMap(sliderval) {
+        			var loop=sliderval;
+        			id = window.setInterval(function(){
+        				loop++;
+        				changeYear(loop);
+        				$("#slider").slider("value", loop);
+        				if (loop===slidemax) {
+        					clearInterval(id);
+        					$(".fa-play").toggle();
+        					$(".fa-pause").toggle();
+        				}
+        			},1000);
+        			
+        		};
+               
+         		$('.fa-pause').on('click',function(e) {
+        			e.preventDefault();
+        			clearInterval(id);
+        			$(".fa-play").toggle();
+        			$(".fa-pause").toggle();
+        		});
+        	
+        		$('.fa-play').on('click',function(e) {
+        		    var s = $("#slider"), 
+        				val = s.slider("value");
+        			if (val==slidemax) {
+        				val = -1;
+        				$(".buildshape").hide();
+        			}
+        			e.preventDefault();
+        			playMap(val);
+        			$(".fa-play").toggle();
+        			$(".fa-pause").toggle();
+        		});
+	
+            });
+			
+
+        })
+       
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+    
+    
+    
+  </body>
+</html>
