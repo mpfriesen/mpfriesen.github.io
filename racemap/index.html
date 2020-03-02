@@ -30,7 +30,8 @@
         .button_block { margin-bottom: 20px; }
         .button_block .right-col { text-align: right; }
         .year_block,.tractbox { line-height: 110%; }
-        .year_block h2,.tractbox h5 { color: #762a83; }
+        .color_pct { color: #762a83; }
+        .color_raw { color: #1b7837; }
         h5 { margin: 20px 0 4px; }
         button.btn-secondary:not(:disabled):not(.disabled).button_pct.active { background-color: #762a83; border-color:#762a83; }
         button.btn-secondary:not(:disabled):not(.disabled).button_raw.active { background-color: #1b7837; border-color: #1b7837; }
@@ -40,6 +41,8 @@
         .pct { font-size: 85%; }
         #legend { position: absolute; bottom:10px;left:10px; opacity: 1;z-index: 1000;}
         svg.raw { display:none; }
+        #map path.tracts:hover { fill-opacity: 1; stroke: #999; }
+
     </style>
   </head>
   <body>
@@ -228,7 +231,7 @@
             			var tract = p.tract_name;
             			var blackpct = (p.black/p.total)*100;
             			var whitepct = (p.white/p.total)*100;
-            			var tract = "<h5>"+p.county+" County<br>"+p.tract_name+"</h5>"
+            			var tract = "<h5 class='color_pct'>"+p.county+" County<br>"+p.tract_name+"</h5>"
             			    + "<div class='info_hed'>Total</div>"
             			    + "<div class='info_num'>"+addCommas(p.total)+"</div>"
             			    + "<div class='info_hed'>African-American</div>"
@@ -266,7 +269,10 @@
         				return newmarker;
         				
     				}
-    			}).addTo(map).bringToFront();
+    			}).addTo(map).bringToFront()
+    			    .on("click",function(e){
+					mapClick(e);
+				});
     
     			var rawBlack = L.geoJson(data, {
     				onEachFeature: pop,
@@ -288,18 +294,26 @@
         					weight: 0,
         					fillOpacity: fillop
         				});
+				        newmarker.on('mouseover', function (e) {
+				            this.openPopup();
+				        });
+				        newmarker.on('mouseout', function (e) {
+				            this.closePopup();
+				        });
         
         				return newmarker;
         				
     				}
-    			});
+    			}).on("click",function(e){
+					mapClick(e);
+				});
     			
     			function changeType(type) {
                     $(".btn-group.census_type button").removeClass("active");
                     $(".button_"+type).addClass("active");
                     $("#legend svg").hide();
                     $("#legend svg."+type).show();
-                    
+                    $(".year_block h2,.tractbox h5").removeClass().addClass("color_"+type);
         			map.removeLayer(rawBlack);
         			map.removeLayer(pctBlack);
                     var position = $(".btn-group.census_years button.active").data("position");
@@ -329,7 +343,7 @@
                     blackpct = (black/total)*100;
                     
                     html = "<div class='year_block census_"+year+"'>"
-                        + "<h2>"+year+"</h2>"
+                        + "<h2 class='color_pct'>"+year+"</h2>"
                         + "<div class='info_hed'>Total population</div>"
                         + "<div class='info_num'>"+addCommas(total)+"</div>"
                         + "<div class='info_hed'>African-American</div>"
@@ -353,7 +367,30 @@
                     limits[position].addTo(map).bringToBack();
                 }
          		
-        		var id;
+ 				var selected;
+
+				function mapClick(e) {
+					if (selected) {
+					// Reset selected to default style
+						e.target.setStyle({
+							weight: weight,
+							fillOpacity: fillop
+						})
+					}
+					// Assign new selected
+					selected = e.layer;
+					// Bring selected to front
+					selected.bringToFront();
+					// Style selected
+					selected.setStyle({
+						color: '#000',
+						weight:3,
+						fillOpacity: 1,
+						opacity:1
+					})
+				}
+                
+                var id;
         	  
         		function playMap(sliderval) {
                     console.log(sliderval);
