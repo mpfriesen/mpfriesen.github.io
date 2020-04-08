@@ -2,20 +2,22 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>		 
-        <script src="https://projects.oregonlive.com/js/pym.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="https:////maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://projects.oregonlive.com/css/fonts.css">
+        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
         <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
         <script src="https://d3js.org/topojson.v1.min.js"></script>
-        <script src="https://projects.oregonlive.com/js/colorbrewer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+        <script src="../js/colorbrewer.js"></script>
         <style>
-            .bubble :hover { stroke: #000; }
+            body { overflow-x: hidden; font-family: "PT Sans",sans-serif; }
+            h1 { font-weight: bold; text-align: center; margin-top:20px; }
+            .container { width:100%; max-width: 700px; }
             .legend circle { fill: none; stroke: #ccc; }
             .legend text { fill: #777; font: 10px sans-serif; text-anchor: middle; }
     		.map,.usmap { width:100%; position: relative; }
-    		.usmap { margin-bottom: 30px; }
-    		.land { fill: #ddd; stroke: #fff; stroke-linejoin: round; stroke-width: .5; }
+    		.land { fill: #ddd; /* stroke: #fff; stroke-linejoin: round; stroke-width: .5; */ }
     		.land.hover { stroke: #000; stroke-width: 1;}
     		.maptip { width: 150px; z-index: 5; }
             .popname { font-weight: bold; text-transform: uppercase; font-size: 12px; }
@@ -24,17 +26,42 @@
             .bubble { fill: brown; fill-opacity: .1; stroke: #900; stroke-width: .5px; }
             circle.active { stroke-width:2px;}
             .bubble :hover { stroke: #000; }
-            .land { fill: #ddd; }
             .county:hover { stroke: #000; stroke-width: 2px;fill:#ccc; }
-            .border { fill: none; stroke: #fff; stroke-linejoin: round; stroke-linecap: round; }
-            .border--state { stroke-width: .7px; stroke:#fff; }
-            .border--county { stroke-width: .4px; }
+            .border { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+            .border--state { stroke-width: .7px; stroke: #fff; stroke:#fff; }
             .hideit { display:none; }
 			.maptip { width: 150px; z-index: 5; }
-            .popname { font-weight: bold; text-transform: uppercase; font-size: 12px; }
-            circle.dot { fill-opacity: .7; }
-            .dot { stroke: transparent; stroke-width: 8px; cursor: pointer; }
-            .dot:hover { stroke: rgba(68,127,255,0.3)}
+            .popname { font-weight: bold; text-transform: uppercase; font-size: 11px; }
+            circle.dot { fill-opacity: .5; }
+            .axis line, .axis path { stroke: #666;}
+            .axis text { fill: #666; }
+            .scatter { position: relative; }
+            .legendQuant text { font-size: 10px; fill:#666; }
+            .maptip { position: absolute;
+            	width: 160px;
+            	height: auto;
+            	padding: 10px;
+            	background-color: white;
+            	-webkit-border-radius: 4px;
+            	-moz-border-radius: 4px;
+            	border-radius: 4px;
+            	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+            	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+            	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+            	pointer-events: none;
+            	font-family: "PT Sans",sans-serif;
+            	font-size: 10px;
+            	opacity: .9;  }
+            .maptip.hideit { display: none; }
+            .maptip .coname { font-weight: bold; font-size: 13px; line-height: 110%; }
+            .maptip .cname { font-size: 11px; }
+            .maptip table { width: 100%; }
+			.scatter circle.dot.active,path.counties.active { stroke: #000; stroke-width:2px; opacity:1 }
+			.allbuttons { text-align: center; margin:auto; }
+            .guff { text-align: center; margin-bottom: 15px; font-size: 13px; }
+            h2 { text-align: center; font-weight: bold; font-size: 18px; margin:15px 0 0; }
+            .axislabel { font-weight: bold; font-size: 11px; text-transform: uppercase; }
+            .sourceline { font-size: 9px; margin: 30px 0; border-top: 1px solid #999; padding-top: 20px; }
         </style>
     </head>
     <body>
@@ -42,13 +69,20 @@
         
              <div class="row">
                 <div class="col-12">
+                    <h1>The health of U.S. counties</h1>
+                    <div class="guff">Click on a button below to see various health-related measures in U.S. counties</div>
+                    <div class="allbuttons"></div>
+
+                    <h2 class="maplabel"></h2>
                     <div class="usmap">
                         <div class='maptip hideit tip'></div>
                     </div>
                     
-                    <div class="scatter"></div>
+                    <div class="scatter">
+                        <div class='maptip hideit tip'></div>
+                    </div>
                     
-                    
+                    <div class="sourceline">Sources: The New York Times, American Hospital Association,Institute for Health Metrics and Evaluation, U.S. Census Bureau</div>
                 </div>
             </div>
         </div>       
@@ -60,217 +94,8 @@
         
         
         
+        <script src="main.js"></script>
         
-        <script>
-
-
-
-
-
-
-
-			$(function() {
-				var width = $(".usmap").width(),
-				    height = width*.6,
-				    margin = { top:20, right:0, bottom: 30, left: 40 },
-				    scatterwidth = width,
-				    scatterheight = width*.3;
-
-				var projection = d3.geoAlbersUsa()
-				    .scale([width*1.2])
-                    .translate([(width/2)+3, (height/2)]);
-				
-				var path = d3.geoPath()
-				    .projection(projection);
-				
-				var svg = d3.select(".usmap").append("svg")
-				    .attr("width", width)
-				    .attr("height", height);
-				    
-                d3.queue()
-                    .defer(d3.json,"data/counties-10m.json")
-                    .defer(d3.json,"data/data.json")
-                    .await(ready)
-		
-                function ready(error, us, data) {
-	                
-                  if (error) return console.error(error);
-                  
-                  var countydata = [];
-                  var domainArray = [];
-                  data.forEach(function(d) {
-                    countydata[d.id] = d;
-                    var val = parseFloat(d.confirmed/d.population*1000);
-                    domainArray.push(val);
-                  });                
-
-
-                  var counties = us.objects.counties.geometries;
-                  counties.forEach(function(d) {
-                      id = +d.id;
-                      d.properties = countydata[id];
-                  })                 
-                
-				var colorScale = d3.scaleQuantile()
-				    .range(colorbrewer.Reds[6])
-                    .domain(domainArray);
-                
-                   
-                  svg.append("g")
-                      .attr("class", "land")
-                    .selectAll("path")
-                       .data(topojson.feature(us, us.objects.states).features)
-                    .enter().append("path")
-                      .attr("d", path);
-                      
-                  svg.append("path")
-                      .datum(topojson.mesh(us, us.objects.counties, function(a, b) { return a !== b; }))
-                      .attr("class", "border border--county")
-                      .attr("d", path);
- 
-                   svg.append("g")
-                      .attr("class", "counties")
-                    .selectAll("path")
-                       .data(topojson.feature(us, us.objects.counties).features)
-                    .enter().append("path")
-                      .attr("d", path)
-		 		      .style("fill", function(d) {
-    		 		      if (d.properties.confirmed>0) { 
-                           var val = d.properties.confirmed/d.properties.population*1000;
-                           return colorScale(val);
-                           } else {
-                               return "#ccc";
-                           }
- 		 		      })
-                     
-                  svg.append("path")
-                      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-                      .attr("class", "border border--state")
-                      .attr("d", path);
-                
-
-// scatterplot starts here
-                    var x = d3.scaleLinear()
-                        .range([0, scatterwidth]);
-                        
-                    var y = d3.scaleLinear()
-                        .range([scatterheight, 0]);
-                        
-                    var xAxis = d3.axisBottom(x);
-                    
-                    var yAxis = d3.axisLeft(y);
-                    
-                    
-                    var brush = d3.brush().extent([[0, 0], [scatterwidth, scatterheight]]).on("end",brushended),
-                        idleTimeout,
-                        idleDelay = 350;
-                    
-                    
-    				var ssvg = d3.select(".scatter").append("svg")
-    				    .attr("width", scatterwidth)
-    				    .attr("height",scatterheight+margin.top+margin.bottom)
-    				  .append("g")
-    				    .attr("transform","translate("+margin.left+","+margin.top+")");
-    				    
-    				var clip = ssvg.append("defs").append("svg:clipPath")
-                    	.attr("id", "clip")
-                    	.append("svg:rect")
-                    	.attr("width", scatterwidth)
-                    	.attr("height", scatterheight)
-                    	.attr("x", 0)
-                    	.attr("y", 0);
-
-    				    
-                    var xExtent = d3.extent(data, function (d) { return d.population; });
-                    var yExtent = d3.extent(data, function (d) { return d.confirmed; });
-                    x.domain(d3.extent(data, function (d) { return d.population; })).nice();
-                    y.domain(d3.extent(data, function (d) { return d.confirmed; })).nice();
-    			
-                    var scatter = ssvg.append("g")
-                        .attr("id","scatterplot")
-                        .attr("clip-path","url(#clip)");
-    			
-                   scatter.selectAll(".dot")
-                      .data(data)
-                    .enter().append("circle")
-                      .attr("class", "dot")
-                      .attr("r", 3.5)
-                      .attr("cx", function(d) { return x(d.population); })
-                      .attr("cy", function(d) { return y(d.confirmed); })
-                      .style("fill", function(d) { 
-    		 		      if (d.confirmed>0) { 
-                           var val = d.confirmed/d.population*1000;
-                           return colorScale(val);
-                           } else {
-                               return "#ccc";
-                           }
-                      });
-   				
-                  ssvg.append("g")
-                      .attr("class", "x axis")
-                      .attr("id","axis--x")
-                      .attr("transform", "translate(0," + scatterheight + ")")
-                      .call(xAxis);
-                
-                  ssvg.append("g")
-                      .attr("class", "y axis")
-                      .attr("id","axis--y")
-                      .call(yAxis);
-                                      
-
-                  scatter.append("g")
-                    .attr("class","brush")
-                    .call(brush);
-                    
-                    
-                function brushended() {
-        
-                    var s = d3.event.selection;
-                    if (!s) {
-                        if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-                        x.domain(d3.extent(data, function (d) { return d.population; })).nice();
-                        y.domain(d3.extent(data, function (d) { return d.confirmed; })).nice();
-                    } else {
-                        
-                        x.domain([s[0][0], s[1][0]].map(x.invert, x));
-                        y.domain([s[1][1], s[0][1]].map(y.invert, y));
-                        scatter.select(".brush").call(brush.move, null);
-                    }
-                    zoom();
-                }
-        
-                function idled() {
-                    idleTimeout = null;
-                }
-        
-                function zoom() {
-        
-                    var t = scatter.transition().duration(750);
-                    ssvg.select("#axis--x").transition(t).call(xAxis);
-                    ssvg.select("#axis--y").transition(t).call(yAxis);
-                    scatter.selectAll("circle").transition(t)
-                    .attr("cx", function (d) { return x(d.population); })
-                    .attr("cy", function (d) { return y(d.confirmed); });
-                }
-
-
-
-
-
-
-
-
-
-
-
-
-				}
-			});
-           
-            
-            
-            
-        </script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     </body>
 </html>
