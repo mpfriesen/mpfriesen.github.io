@@ -20,6 +20,7 @@ function addCommas(x) {
        scatterwidth = width,
        scatterheight = width*.3;
 
+//        Map function
     
     function setMap() { 
         
@@ -48,6 +49,7 @@ function addCommas(x) {
             
           if (error) return console.error(error);
           
+//           Add new metrics to data and domain array
           var countydata = [];
           var domainArray = [];
           data.forEach(function(d) {
@@ -62,17 +64,13 @@ function addCommas(x) {
           });                
     
           
-          
+//           Join data with topojson
           var counties = us.objects.counties.geometries;
           counties.forEach(function(d) {
               d.properties = countydata[d.id];
           })                 
         
-        
-        
           var colorScale = makeColorScale(domainArray,ramp);
-        
-        
            
           svg.append("g")
               .attr("class", "land")
@@ -86,6 +84,7 @@ function addCommas(x) {
               .attr("class", "border border--county")
               .attr("d", path);
     
+//               Assign colors to counties
            svg.append("g")
             .selectAll("path")
                .data(topojson.feature(us, us.objects.counties).features)
@@ -104,6 +103,8 @@ function addCommas(x) {
                        return "#ccc";
                    }
      		      })
+     		      
+//                    Tooltip and hover behavior
     		   .on("mouseover", function(d) {
     			   highlight(d.properties);
     			   d3.select(".usmap .maptip")
@@ -114,8 +115,6 @@ function addCommas(x) {
     			   d3.select(".usmap .maptip")
     			     .classed("hideit", true);
     		   })
-    		   	
-    
     		   .on("mousemove", function(d) {
     			   var rightlimit = width-200;
     			   var mousep = d3.mouse(this);
@@ -137,19 +136,24 @@ function addCommas(x) {
     		   		  .html(text);
     		   });
     
-             
+//              Make state borders
           svg.append("path")
               .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
               .attr("class", "border border--state")
               .attr("d", path);
-              
+
+//               Set up legend
           svg.append("g")
             .attr("class","legendQuant")
             .attr("transform","translate("+(width-80)+","+(height-90)+")");
             
           makeLegend(colorScale);
-            
+          
+//                 fire scatterplot function
             setChart(data,expression);
+
+
+//                 Radio buttons for picking data metric
             var buttontext = "<div class='btn-group btn-group-sm btn-group-toggle covidmap' data-toggle='buttons'>"
                     +   "<label class='btn btn-outline-secondary btn-sm active' data-type='covid'>"
                     +     "<input type='radio' class='covid' data-type='covid' name='options' id='option1' autocomplete='off' checked> COVID-19"
@@ -171,16 +175,12 @@ function addCommas(x) {
             d3.select(".allbuttons")
                 .html(buttontext);
                 
+//                 Button even listener
             d3.selectAll(".covidmap input")
                 .on("click",function(d) {
                     var expression = d3.select(this).attr("data-type");
                     changeAttribute(expression,data);
                 });
-            
-            
-
-            
-            
 
         }
     }
@@ -193,6 +193,7 @@ function addCommas(x) {
 
         };
         
+//         Scatterplot function
       function setChart(data,expression) {
             var ramp = colors[expression];
             var x = d3.scaleLinear()
@@ -205,6 +206,7 @@ function addCommas(x) {
             
             var yAxis = d3.axisLeft(y).ticks(5);
             
+//                 Pan-and-zoom function for scatterplot 
             var zoom = d3.zoom()
                 .scaleExtent([.5,20])
                 .extent([[0,0], [scatterwidth,scatterheight]])
@@ -245,6 +247,7 @@ function addCommas(x) {
                 .attr("id","scatterplot")
                 .attr("clip-path","url(#clip)");
     	
+//                 Placing dots
            scatter.selectAll(".dot")
               .data(data)
             .enter().append("circle")
@@ -255,6 +258,8 @@ function addCommas(x) {
               .attr("cx", function(d) { return x(d.population); })
               .attr("cy", function(d) { return y(d[expression+"_rate"]); })
               .style("fill", colorbrewer[ramp][6][5])
+
+//                 Tooltip and hover behavior
               .on("mouseover",function(d) {
                    highlight(d);
                    d3.select(".scatter .maptip")
@@ -343,7 +348,7 @@ function addCommas(x) {
             })
         }
       
-      
+//             Function for updating map to new data metric on button click
         function changeAttribute(attribute,data) {
             expressed = attribute;
             d3.select(".maplabel").text(labels[expressed]);
@@ -375,6 +380,8 @@ function addCommas(x) {
      		    });
             makeLegend(colorScale);
             d3.select(".scatter svg").remove();
+            
+//                 Replaces scatterplot with new data
             setChart(data,expressed);
           
         }
@@ -397,7 +404,7 @@ function addCommas(x) {
                 .call(legend);
         }
         
-
+//             functions to highlight and dehighlight counties and corresponding dots on hover
         function highlight(props) {
            id = +props.id;
 		   d3.selectAll(".fips_"+id)
@@ -411,6 +418,7 @@ function addCommas(x) {
 		     .classed("active",false);
         }
 
+//             functions to bring hovered dot to the front and move it back
 		d3.selection.prototype.moveToFront = function() {
 		  return this.each(function() {
 			  this.parentNode.appendChild(this);
@@ -425,6 +433,8 @@ function addCommas(x) {
 		        } 
 		    });
 		};
+		
+// 		    Constructing rollover info box
 		
 		function mapTip(props) {
 			var confirmed = props.confirmed;
@@ -448,6 +458,7 @@ function addCommas(x) {
              return text;
         }
 
+//         initial map load function
        setMap();
 })();
 
