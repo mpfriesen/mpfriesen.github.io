@@ -1,75 +1,94 @@
 body {
-  font-family: proxima-nova,sans-serif; }
+  font-family: proxima-nova, sans-serif;
+}
 
 h1 {
   font-weight: 900;
   text-align: center;
   font-size: 35px;
   color: #444;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+}
 
 h1 span {
   background-color: #444;
-  padding: 0 10px 0; }
+  padding: 0 10px 0;
+  color: #ddd;
+}
 
 h2 {
-  font-weight: 700; }
+  font-weight: 700;
+}
 
 .detail-item h2 {
-  margin: 0 0 5px; }
+  margin: 0 0 5px;
+}
 
 .port-img {
-  margin-top: 40px; }
+  margin-top: 40px;
+}
 
 .port-img img {
   width: 100%;
   height: auto;
   border: 2px solid white;
   border-radius: 8px;
-  box-shadow: 1px 1px 5px #aaa; }
+  box-shadow: 1px 1px 5px #aaa;
+}
 
 .port-img img:hover {
-  box-shadow: 1px 1px 5px #666; }
+  box-shadow: 1px 1px 5px #666;
+}
 
 h5 {
   font-weight: bold;
   font-size: 18px;
-  margin-top: 10px; }
+  margin-top: 10px;
+}
 
 .lede {
   width: 100%;
-  height: calc(100vw * .2);
+  height: 20vw;
   background: url(../images/willamette.jpg) no-repeat;
   background-size: cover;
   position: fixed;
-  background-position-y: 50%; }
+  background-position-y: 50%;
+}
 
 .desc, .social {
   text-align: center;
   text-transform: uppercase;
-  font-weight: 100; }
+  font-weight: 100;
+}
 
 .social {
-  margin-top: 50px; }
+  margin-top: 50px;
+}
 
 .social a {
-  color: #444; }
+  color: #444;
+}
 
 .gray {
-  color: #ddd; }
+  color: #ddd;
+}
 
 .container {
-  padding-top: calc(100vw * .2);
-  position: relative; }
+  padding-top: 20vw;
+  position: relative;
+}
 
 .port-item {
-  background-color: rgba(255, 255, 255, 0.8); }
+  background-color: rgba(255, 255, 255, 0.8);
+}
 
 .detail-item {
-  padding: 5px 20px 20px; }
+  padding: 5px 20px 20px;
+}
 
 .desc .port-item {
-  padding-top: 5px; }
+  padding-top: 5px;
+}
 
 .popup {
   position: absolute;
@@ -81,38 +100,49 @@ h5 {
   background-color: #e1e1e1;
   padding: 2% 5% 5%;
   display: none;
-  box-shadow: 0 7px 15px #aaa; }
+  box-shadow: 0 7px 15px #aaa;
+}
 
 .detail-img img {
-  width: 100%; }
+  width: 100%;
+}
 
 .detail-cat {
   margin-top: 10px;
   text-transform: uppercase;
-  color: #666; }
+  color: #666;
+}
 
 .detail-tools {
-  margin: 5px 0; }
+  margin: 5px 0;
+}
 
 .close-contain {
   text-align: right;
   margin-bottom: 10px;
   color: #999;
-  font-size: 12px; }
+  font-size: 12px;
+}
 
 .close-it:hover {
   color: #333;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 @media only screen and (max-width: 575px) {
   .portfolio {
     width: 80%;
-    margin: auto; }
+    margin: auto;
+  }
 
   .port-item {
-    padding: 0 30px; } }
+    padding: 0 30px;
+  }
+}
 @media only screen and (max-width: 400px) {
   .popup {
-    width: 100%; } }
+    width: 100%;
+  }
+}
 
 /*# sourceMappingURL=main.css.map */
