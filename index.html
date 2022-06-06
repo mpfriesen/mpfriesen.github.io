@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="https://use.typekit.net/ltb2sic.css">
     <link rel="stylesheet" href="css/main.css">
     <title>Mark Friesen</title>
+    <style>
+      .detail-item h2 { margin-bottom: 0 }
+      .detail-date { margin-bottom: 5px; font-style:italic; }
+    </style>
   </head>
   <body>
     <div class="lede"></div>
@@ -23,12 +27,12 @@
         <div class="port-contain">
             <div class="desc">
                 <div class="row">
-                    <div class="port-item col-12">Journalism <span class="gray">|</span> Maps <span class="gray">|</span> Data visualization</div>
+                    <div class="port-item col-12">Journalism <span class="gray">|</span> Cartography <span class="gray">|</span> Data visualization</div>
                 </div>
             </div>
             <div class="portfolio"></div>
         </div>
-        <div class="social"><a href="images/friesen_resume.pdf">RESUME</a> <span class="gray">|</span> <a href="https://twitter.com/mfriesen">TWITTER</a> <span class="gray">|</span> <a href="https://github.com/mpfriesen/">GITHUB</a> <span class="gray">|</span> <a href="https://www.linkedin.com/in/mfriesen/">LINKEDIN</a></div>
+        <div class="social"><a href="resume.html">RESUME</a> <span class="gray">|</span> <a href="https://twitter.com/mfriesen">TWITTER</a> <span class="gray">|</span> <a href="https://github.com/mpfriesen/">GITHUB</a> <span class="gray">|</span> <a href="https://www.linkedin.com/in/mfriesen/">LINKEDIN</a></div>
     </div>
     <div class="popup"></div>
     <script>
@@ -64,9 +68,10 @@
                     +   "</div>"
                     +   "<div class='detail-cat'>"+item.category+"</div>"
                     +   "<h2>"+item.headline+"</h2>"
+                    +   "<div class='detail-date'>"+item.published+"</div>"
                     +   "<div class='detail-desc'>"+item.desc+"</div>"
                     +   "<div class='detail-tools'><strong>Tools:</strong> "+item.tools+"</div>"
-                    +   "<div class='detail-link'><strong><a href='"+item.link+"'>Link</a></strong></div>"
+                    +   "<div class='detail-link'><strong><a target='_blank' href='"+item.link+"'>Link</a></strong></div>"
                     +   "</div>"
                     + "</div>"
                 

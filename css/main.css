@@ -17,6 +17,7 @@ h1 span {
 }
 
 h2 {
+  font-family: proxima-nova-condensed, sans-serif;
   font-weight: 700;
 }
 
@@ -52,7 +53,22 @@ h5 {
   background: url(../images/willamette.jpg) no-repeat;
   background-size: cover;
   position: fixed;
-  background-position-y: 50%;
+  background-position-y: 70%;
+}
+
+.lede.resume {
+  background-image: url(../images/tax_main.png);
+  z-index: 100;
+}
+
+.hedblock {
+  position: fixed;
+  top: 20vw;
+  left: 15px;
+  width: 100%;
+  background-color: white;
+  z-index: 100;
+  padding-bottom: 10px;
 }
 
 .desc, .social {
