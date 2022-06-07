@@ -8,6 +8,7 @@ h2 { font-family: proxima-nova-condensed, sans-serif;font-weight: 700; }
 .detail-item h2 { margin: 0 0 5px; }
 .port-img { margin-top: 40px; }
 .port-img img { width: 100%; height: auto; border: 2px solid white;  border-radius: 8px; box-shadow: 1px 1px 5px #aaa;  }
+.port-item:hover { cursor:pointer; color: #888; }
 .port-img img:hover { box-shadow: 1px 1px 5px #666; }
 h5 { font-weight: bold; font-size: 18px; margin-top: 10px; }
 .lede { width: 100%; height: calc(100vw * .2); background: url(../images/willamette.jpg) no-repeat; background-size: cover; position: fixed; background-position-y: 70%; }
@@ -17,7 +18,7 @@ h5 { font-weight: bold; font-size: 18px; margin-top: 10px; }
 .social { margin-top: 50px; }
 .social a { color: $dark-gray; }
 .gray { color: $light-gray; }
-.container { padding-top: 20vw; position: relative; }
+.container { padding-top: 20vw; position: relative; padding-bottom: 50px;  }
 .port-item { background-color: rgba(255,255,255,.8); }
 .detail-item { padding: 5px 20px 20px; }
 .desc .port-item {  padding-top:5px; }

@@ -16,7 +16,8 @@
 {"ID":16,"skill":"QGIS ","pct":85},
 {"ID":17,"skill":"Leaflet ","pct":90},
 {"ID":18,"skill":"MapBox ","pct":95},
-{"ID":19,"skill":"OpenRefine ","pct":60},
-{"ID":20,"skill":"Excel ","pct":90},
-{"ID":21,"skill":"ArcGIS ","pct":50},
-{"ID":22,"skill":"R ","pct":30}]
+{"ID":19,"skill":"Tabula","pct":80},
+{"ID":20,"skill":"OpenRefine ","pct":60},
+{"ID":21,"skill":"Excel ","pct":90},
+{"ID":22,"skill":"ArcGIS ","pct":50},
+{"ID":23,"skill":"R ","pct":30}]

@@ -37,6 +37,11 @@ h2 {
   box-shadow: 1px 1px 5px #aaa;
 }
 
+.port-item:hover {
+  cursor: pointer;
+  color: #888;
+}
+
 .port-img img:hover {
   box-shadow: 1px 1px 5px #666;
 }
@@ -92,6 +97,7 @@ h5 {
 .container {
   padding-top: 20vw;
   position: relative;
+  padding-bottom: 50px;
 }
 
 .port-item {
