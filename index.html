@@ -62,6 +62,10 @@
                 $(".container").css({"opacity":".3"});
                 var id = $(this).data("id")-1;
                 var item = result[id];
+                var detail_link = "<div class='detail-link'><strong><a target='_blank' href='"+item.link+"'>&raquo; "+item.linkhead+" <i class='fas fa-link'></i></a></strong></div>";
+                if (item.link2) {
+                  detail_link += "<div class='detail-link'><strong><a target='_blank' href='"+item.link2+"'>&raquo; "+item.link2head+" <i class='fas fa-link'></i></a></strong></div>"
+                }
                 var popblock = "<div class='row'>"
                     + "<div class='detail-item col-12'>"
                     +   "<div class='close-contain'><span class='close-it'><i class='fas fa-times-circle'></i> CLOSE</span></div>"
@@ -73,7 +77,7 @@
                     +   "<div class='detail-date'>"+item.published+"</div>"
                     +   "<div class='detail-desc'>"+item.desc+"</div>"
                     +   "<div class='detail-tools'><strong>Tools:</strong> "+item.tools+"</div>"
-                    +   "<div class='detail-link'><strong><a target='_blank' href='"+item.link+"'>&raquo; "+item.linkhead+" <i class='fas fa-link'></i></a></strong></div>"
+                    +   detail_link
                     +   "</div>"
                     + "</div>"
                 
