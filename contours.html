@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Add Contour Lines</title>
+	<meta property="og:description" content="Add contour lines to your map from a raster-dem source." />
+	<meta charset='utf-8'>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.18.0/dist/maplibre-gl.css' />
+	<script src='https://unpkg.com/maplibre-gl@5.18.0/dist/maplibre-gl.js'></script>
+	<script src="https://unpkg.com/pmtiles@3.0.6/dist/pmtiles.js"></script>
+
+	<style>
+		body { margin: 0; padding: 0; }
+		html, body, #map { height: 100%; }
+	</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/maplibre-contour@0.0.5/dist/index.min.js"></script>
+<script>
+	const CLOUDFRONT = "https://d1f1spo63kcq6y.cloudfront.net",
+	cfpath = CLOUDFRONT + "/data-points/",
+	mapstyle = CLOUDFRONT + "/wildfires/wildfire_base.json";
+	
+	const demSource = new mlcontour.DemSource({
+		url: 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
+		encoding: 'terrarium',
+		maxzoom: 12,
+		// offload contour line computation to a web worker
+		worker: true
+	});
+
+	// calls maplibregl.addProtocol to register a dynamic vector tile provider that
+	// downloads raster-dem tiles, computes contour lines, and encodes as a vector
+	// tile for each tile request from maplibre
+	demSource.setupMaplibre(maplibregl);
+	let protocol = new pmtiles.Protocol();
+	maplibregl.addProtocol("pmtiles",protocol.tile);
+	
+	let PMTILES_URL = CLOUDFRONT + "/tiles/us_ak.pmtiles";
+	
+	const p = new pmtiles.PMTiles(PMTILES_URL);
+	protocol.add(p);
+	const map = (window.map = new maplibregl.Map({
+		container: 'map',
+		zoom: 17,
+		center: [-122.83157528512312,45.59619733311804],
+		style: 'https://api.maptiler.com/maps/hybrid-v4/style.json?key=cvkULvoxPK9rcqNp5Su7'
+	}));
+	map.on('load', async () => {
+		console.log(map.getZoom());
+		
+		map.addControl(new maplibregl.NavigationControl());
+		map.addControl(new maplibregl.ScaleControl({unit: 'imperial',maxWidth: 150}));
+		map.addSource("nwash", {
+			type: 'geojson',
+			data: {
+				'type': 'FeatureCollection',
+				'features': [
+					{
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Point',
+							'coordinates': [-122.83157528512312,45.59619733311804]
+						},
+					},
+			
+				]
+			}
+		})
+		map.addLayer({
+		 'id': 'proj',
+		 'type': 'circle',
+		 'source': 'nwash',
+		 'paint': {
+		  'circle-radius': 4,
+		   'circle-color': "#900",
+		   'circle-stroke-width': 2,
+		   'circle-stroke-color': "#fff"
+		   }
+		});
+		map.addSource('hillshadeSource', {
+			type: 'raster-dem',
+			tiles: [demSource.sharedDemProtocolUrl],
+			tileSize: 256
+		});
+		// map.addLayer({
+		// 	'id': 'hills',
+		// 	'type': 'hillshade',
+		// 	'source': 'hillshadeSource',
+		// 	'layout': {'visibility': 'visible'},
+		// 	'minzoom': 13,
+		// 	'paint': { 
+		// 		"hillshade-shadow-color": "rgba(16, 40, 20, 0.7)",
+		// 		"hillshade-highlight-color": "#f3f3f3",
+		// 		"hillshade-accent-color": "#ffffff",
+		// 		"hillshade-exaggeration":
+		// 		 ["interpolate", 
+		// 			 ["exponential", 1.2], 
+		// 			 ["zoom"], 
+		// 			 5, 0,
+		// 			 6, 0.02, 
+		// 			 8, 0.08, 
+		// 			 15, 0.2
+		// 		 ] 
+		// 	 }
+		// })
+		map.addSource('contourSourceFeet', {
+			type: 'vector',
+			tiles: [
+				demSource.contourProtocolUrl({
+				// meters to feet
+					multiplier: 3.28084,
+					overzoom: 1,
+					thresholds: {
+					// zoom: [minor, major]
+						11: [200, 1000],
+						12: [100, 500],
+						13: [50, 200],
+						14: [10, 100],
+						15: [2, 10]
+					},
+					elevationKey: 'ele',
+					levelKey: 'level',
+					contourLayer: 'contours'
+				})
+			],
+			maxzoom: 15
+		})
+		map.addLayer({
+			id: 'contours',
+			type: 'line',
+			source: 'contourSourceFeet',
+			'source-layer': 'contours',
+			paint: {
+				'line-color': "#fff",
+				'line-opacity': 0.3,
+				// "major" contours have level=1, "minor" have level=0
+				'line-width': ['match', ['get', 'level'], 1, 1, 0.5]
+			}
+		})
+		map.addLayer({
+			id: 'contour-text',
+			type: 'symbol',
+			source: 'contourSourceFeet',
+			'source-layer': 'contours',
+			filter: ['>', ['get', 'level'], 0],
+			paint: {
+				'text-halo-color': 'white',
+				'text-halo-width': 1
+			},
+			layout: {
+				'symbol-placement': 'line',
+				'text-size': 10,
+				'text-field': [
+					'concat',
+					['number-format', ['get', 'ele'], {}],
+					'\''
+				],
+				'text-font': ['Noto Sans Bold']
+			}
+		})
+
+	})
+	
+	
+</script>
+</body>
+</html>
