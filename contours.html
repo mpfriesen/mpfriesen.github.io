@@ -125,13 +125,14 @@
 					contourLayer: 'contours'
 				})
 			],
-			maxzoom: 15
+			maxzoom: 19
 		})
 		map.addLayer({
 			id: 'contours',
 			type: 'line',
 			source: 'contourSourceFeet',
 			'source-layer': 'contours',
+			maxzoom: 16,
 			paint: {
 				'line-color': "#fff",
 				'line-opacity': 0.3,
@@ -139,10 +140,51 @@
 				'line-width': ['match', ['get', 'level'], 1, 1, 0.5]
 			}
 		})
+		map.addSource('finecontour', {
+			type: 'geojson',
+			data: CLOUDFRONT + '/data-points/nw_contours4326.geojson'			
+		})
+		map.addLayer({
+			id: 'fine_contours',
+			type: 'line',
+			source: 'finecontour',
+			minzoom: 16,
+			paint: {
+				'line-color': "#fff",
+				'line-opacity': 0.4,
+				// "major" contours have level=1, "minor" have level=0
+				'line-width': ['match', ['get', 'level'], 1, 1, 0.5]
+			}
+		})
+
+		
+		
 		map.addLayer({
 			id: 'contour-text',
 			type: 'symbol',
+			source: 'finecontour',
+			minzoom: 16,
+			filter: ['>', ['get', 'elevation'], 0],
+			paint: {
+				'text-halo-color': 'white',
+				'text-halo-width': 1
+			},
+			layout: {
+				'symbol-placement': 'line',
+				'text-size': 10,
+				'text-field': [
+					'concat',
+					['number-format', ['get', 'elevation'], {}],
+					'\''
+				],
+				'text-font': ['Noto Sans Bold']
+			}
+		})
+		map.addLayer({
+			id: 'contour-text-high',
+			type: 'symbol',
 			source: 'contourSourceFeet',
+			maxzoom: 16,
 			'source-layer': 'contours',
 			filter: ['>', ['get', 'level'], 0],
 			paint: {
@@ -160,6 +202,7 @@
 				'text-font': ['Noto Sans Bold']
 			}
 		})
+
 
 	})
 	
