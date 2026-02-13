@@ -157,6 +157,20 @@
 			}
 		})
 
+		map.addSource('taxlots', {
+			type: 'geojson',
+			data: 'nwlots.geojson'			
+		})
+		map.addLayer({
+			id: 'taxlots',
+			type: 'line',
+			source: 'taxlots',
+			paint: {
+				'line-color': "#0f0",
+				'line-opacity': 0.2,
+				'line-width': 2
+			}
+		},'fine_contours')
 		
 		
 		map.addLayer({
@@ -202,6 +216,21 @@
 				'text-font': ['Noto Sans Bold']
 			}
 		})
+		map.addLayer({
+			'id': 'lot-labels',
+			'type': 'symbol',
+			'source': 'taxlots',
+			'paint': {
+				'text-color': '#070',
+				'text-halo-color': 'white',
+				'text-halo-width': 1
+			},
+			'layout': {
+				'text-size': 10,
+				'text-field': ['get', 'SITEADDR'],
+				'text-font': ['Noto Sans Bold']
+			}
+		});
 
 
 	})
